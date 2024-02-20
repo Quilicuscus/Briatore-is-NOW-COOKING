@@ -1,3 +1,5 @@
+import itertools
+
 tiempo_vuelta_estandar = 100
 tiempo_vuelta_actual = 0
 tiempo_extra_por_vuelta = 1
@@ -7,7 +9,21 @@ tiempo_total = 0
 tiempo_final = 100000000000
 lista_de_tiempos = []
 k = 1
-numero_paradas = 0
+numero_paradas = 2
+
+# Generar los números del 1 al 10
+numeros = list(range(1, vueltas))
+
+# Generar todas las combinaciones de dos números para así poder todas las posibles dos paradas
+combinaciones = list(itertools.combinations(numeros, numero_paradas))
+
+# Imprimir todas las combinaciones
+for combinacion in combinaciones:
+    for i in combinacion:
+        print(i)
+    print(combinacion)
+
+
 
 for j in range(1, vueltas + 1):
     for i in range(1, vueltas + 1):
