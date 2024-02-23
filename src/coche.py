@@ -10,7 +10,7 @@ class Coche:
     Atributos:
     litros_gas: litros en el tanque de combustible en un momento dado
     vida_ruedas: vueltas recorridas por las ruedas en un momento dado - Sustituir por clase Ruedas
-
+    - Consumo gas??
     Métodos:
     parar: lleva el coche a boxes
     """

@@ -1,2 +1,9 @@
+# Archivos de entrada
+*.csv
+
+# Carpetas de Python
 venv/
+src/__pycache__/
+
+# Carpetas de Pycharm
 .idea/
