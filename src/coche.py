@@ -12,7 +12,9 @@ class Coche:
     vida_ruedas: vueltas recorridas por las ruedas en un momento dado - Sustituir por clase Ruedas
     - Consumo gas??
     Métodos:
-    parar: lleva el coche a boxes
+    peso_gas(): devuelve la pérdida de tiempo en una vuelta a causa del peso del combustible actual
+    degradacion(): devuelve la pérdida de tiempo en una vuelta a causa de la degradación de las gomas
+    parar(): lleva el coche a boxes
     """
 
     def __init__(self, perdida_gas:float, perdida_ruedas:float, max_gas:int, litros_gas:float=-1,
@@ -29,6 +31,15 @@ class Coche:
     #def vuelta(self,....)
     #def update(meter nuevos atributos con csv - para cambiar en mitad de carrera?)
 
+    def peso_gas(self) -> float:
+        """Devuelve la pérdida de tiempo esperada durante una vuelta causada por el peso del
+        combustible en dicha vuelta"""
+        return self.PERDIDA_GAS * self.__litros_gas
+
+    def degradacion(self) -> float:
+        """Devuelve la pérdida de tiempo esperada en una vuelta a causa de la degradación de las
+        gomas del coche en dicha vuelta"""
+        return self.PERDIDA_RUEDAS * self.__vida_ruedas #Clase rueda??
 
     def parar(self, tiempo_pit:float, gas:float, ruedas:bool=True, repairs:float=0) -> float:
         """Este método simula una parada en boxes. Calcula el tiempo de la parada en base al tiempo de
