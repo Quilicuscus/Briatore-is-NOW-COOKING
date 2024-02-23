@@ -14,6 +14,6 @@ class Circuito:
         self.TIEMPO_BASE = tiempo_base
         self.GANANCIA_GOMA = ganancia_goma
 
-        self.engomado = 0 if engomado < 0 else engomado #vueltas*coches?
+        self.__engomado = 0 if engomado < 0 else engomado #vueltas*coches?
         self.__vueltas = vueltas
         self.__coches = coches

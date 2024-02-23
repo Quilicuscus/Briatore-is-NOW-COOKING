@@ -1,5 +1,7 @@
 class Coche:
-    """FIAAAAAUUUUUUN
+    """
+    FIAAAAAUUUUUUN
+
     Constantes:
     PERDIDA_GAS: tiempo extra en recorrer cada vuelta por cada litro de combustible en el depósito
     PERDIDA_RUEDAS: tiempo extra en recorrer cada vuelta por cada vuelta recorrida con las ruedas
@@ -7,7 +9,8 @@ class Coche:
 
     Atributos:
     litros_gas: litros en el tanque de combustible en un momento dado
-    vida_ruedas: vueltas recorridas por las ruedas en un momento dado"""
+    vida_ruedas: vueltas recorridas por las ruedas en un momento dado
+    """
 
     def __init__(self, perdida_gas:float, perdida_ruedas:float, max_gas:int, litros_gas:float=-1,
                  vida_ruedas:int=0):
@@ -17,6 +20,7 @@ class Coche:
 
         self.__litros_gas = max_gas if litros_gas < 0 else litros_gas
         self.__vida_ruedas = vida_ruedas
+        #Añadir ruedas
 
 
     #def vuelta(self,....)
