@@ -103,6 +103,15 @@ for i in lista_paradas: # Para cada combinacion de vueltas de parada
 
 numero_mas_pequeno = min(lista_de_tiempos_de_las_estretegias)
 print(numero_mas_pequeno)
+print(lista_paradas)
+
+posiciones = []
+for i in range(len(lista_de_tiempos_de_las_estretegias)):
+    if lista_de_tiempos_de_las_estretegias[i] == numero_mas_pequeno:
+        posiciones.append(i)
+print(posiciones)
+
+
 
 
 
