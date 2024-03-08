@@ -15,12 +15,12 @@ lista_extras = [0.9,0.6,0.3]
 # extra_3 = 0.3
 
 # Numero de vueltas de la carrera
-vueltas = 5
+vueltas = 30
 
 
 
 # Número de paradas que pretendemos hacer durante la carrera
-numero_paradas = 2
+numero_paradas = 1
 
 vueltas_desde_la_parada = 0
 lista_de_tiempos_de_las_estretegias = []
@@ -29,7 +29,7 @@ lista_de_tiempos_de_las_estretegias = []
 # Combinatoria para encontrar todas las combinaciones de las vueltas de parada
 # en boxes
 # Generar las combinaciones del numero del 1 al 10
-numeros = list(range(1, vueltas+1))
+numeros = list(range(1, vueltas))
 
 # lista_paradas contiene todas las tuplas con las vueltas en las que hay que 
 # parar
@@ -103,12 +103,25 @@ for i in lista_paradas: # Para cada combinacion de vueltas de parada
 
 numero_mas_pequeno = min(lista_de_tiempos_de_las_estretegias)
 print(numero_mas_pequeno)
-print(lista_paradas)
+# print(lista_paradas)
 
 posiciones = []
 for i in range(len(lista_de_tiempos_de_las_estretegias)):
     if lista_de_tiempos_de_las_estretegias[i] == numero_mas_pequeno:
         posiciones.append(i)
+estrategia_final1=[]
+
+contador = 0
+for i in lista_paradas: 
+    for j in neumaticos_a_poner:
+        if contador in posiciones:
+            estrategia_final1.append(i)
+            estrategia_final1.append(j)
+        contador+=1
+
+print(estrategia_final1)
+print(estrategia_final1)        
+print(contador)
 print(posiciones)
 
 
