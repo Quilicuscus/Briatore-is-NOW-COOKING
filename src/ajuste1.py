@@ -44,7 +44,7 @@ def polinomio_grado2():
     p_valor_general = obtener_p_valor_general(tiempos_por_vuelta, coeficientes, cov_matrix, num_params)
 
     # Imprimir el resultado
-    print(f"P-valor general del ajuste: {p_valor_general}")
+    print(f"P-valor general del ajuste polinomico de grado 2: {p_valor_general}")
 
     # Gráfico del ajuste polinomial
     x = np.arange(len(tiempos_por_vuelta))
@@ -60,8 +60,6 @@ def polinomio_grado2():
     plt.show()
 
 def polinomio_grado3():
-
-
     # Función polinómica de grado 3
     def funcion_polinomica(x, a, b, c, d):
         return a * x**3 + b * x**2 + c * x + d
@@ -88,7 +86,7 @@ def polinomio_grado3():
         return p_valor
 
     # Datos de ejemplo: tiempos por vuelta
-    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105])  # Nuevos tiempos por vuelta en segundos
+    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105, 105.23, 105.67, 106.77])  # Nuevos tiempos por vuelta en segundos
 
     # Ajuste de una función polinómica de grado 3 a los datos de tiempos por vuelta
     parametros_optimos, cov_matrix = ajustar_polinomica_grado_3(tiempos_por_vuelta)
@@ -171,51 +169,74 @@ def exponencial():
     plt.show()
 
 def logaritmo():
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
+    from scipy.stats import f
 
-
-    # Definir la función logarítmica
+    # Función logarítmica
     def funcion_logaritmica(x, a, b):
         return a * np.log(b * x)
 
-    # Función para normalizar los datos
-    def normalizar_datos(data):
-        return (data - np.mean(data)) / np.std(data)
+    # Función para ajustar una función logarítmica a los datos
+    def ajustar_logaritmica(tiempos_por_vuelta):
+        # Crear un arreglo para el eje x (vuelta)
+        x = np.arange(1, len(tiempos_por_vuelta) + 1)
 
-    # Función para desnormalizar los parámetros
-    def desnormalizar_parametros(params, data):
-        a_norm, b_norm = params
-        mean_data = np.mean(data)
-        std_data = np.std(data)
-        a = a_norm * std_data
-        b = b_norm / mean_data
-        return a, b
+        # Transformar los datos logarítmicamente
+        tiempos_log = np.log(tiempos_por_vuelta)
+
+        # Estimaciones iniciales para los parámetros
+        a_init = max(tiempos_log) - min(tiempos_log)  # Estimación inicial para 'a'
+        b_init = 1.0  # Estimación inicial para 'b'
+
+        # Ajustar una función logarítmica a los datos
+        parametros_optimos, _ = curve_fit(funcion_logaritmica, x, tiempos_log, p0=[a_init, b_init], maxfev=10000)
+
+        # Obtener los parámetros finales de la función logarítmica
+        a = parametros_optimos[0]
+        b = parametros_optimos[1]
+
+        # Generar los valores ajustados
+        y_pred = a * np.log(b * x)
+
+        # Calcular el residuo cuadrático
+        residuos = tiempos_log - funcion_logaritmica(x, *parametros_optimos)
+        residuo_cuadratico = np.sum(residuos ** 2)
+
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - 2)
+
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((funcion_logaritmica(x, *parametros_optimos) - np.mean(tiempos_log)) ** 2)
+
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / 2) / residuo_cuadratico_reducido
+
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, 2, len(tiempos_por_vuelta) - 2)
+
+        # Devolver los parámetros del ajuste y el p-valor
+        return a, b, p_valor
 
     # Datos de tiempos por vuelta
-    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105])
+    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105, 106, 105.85, 106.56])  # Ejemplo con 5 tiempos por vuelta
 
-    # Crear un arreglo para el eje x (vuelta)
-    x = np.arange(1, len(tiempos_por_vuelta) + 1)
+    # Realizar el ajuste logarítmico
+    a, b, p_valor = ajustar_logaritmica(tiempos_por_vuelta)
 
-    # Normalizar los datos
-    tiempos_norm = normalizar_datos(tiempos_por_vuelta)
-
-    # Ajuste logarítmico con datos normalizados
-    parametros_optimos_norm, _ = curve_fit(funcion_logaritmica, x, tiempos_norm)
-
-    # Desnormalizar los parámetros
-    parametros_optimos = desnormalizar_parametros(parametros_optimos_norm, tiempos_por_vuelta)
-
-    # Generar los valores ajustados
-    y_pred = funcion_logaritmica(x, *parametros_optimos)
-
-    # Mostrar los parámetros del ajuste
+    # Mostrar los resultados
     print("Parámetros del ajuste logarítmico:")
-    print("a =", parametros_optimos[0])
-    print("b =", parametros_optimos[1])
+    print("a =", a)
+    print("b =", b)
+    print("P-valor del ajuste logarítmico:", p_valor)
 
     # Graficar los resultados
+    x = np.arange(1, len(tiempos_por_vuelta) + 1)
+    y_pred = a * np.log(b * x)
+
     plt.scatter(x, tiempos_por_vuelta, label='Tiempos por vuelta reales')
-    plt.plot(x, y_pred, color='red', label='Ajuste logarítmico')
+    plt.plot(x, np.exp(y_pred), color='red', label='Ajuste logarítmico')
     plt.title('Ajuste logarítmico a los tiempos por vuelta')
     plt.xlabel('Vuelta')
     plt.ylabel('Tiempo por vuelta (s)')
@@ -224,5 +245,10 @@ def logaritmo():
     plt.show()
 
 
-    
-logaritmo()
+
+def calcular():
+    logaritmo()
+    polinomio_grado2()
+
+
+calcular()
