@@ -141,7 +141,7 @@ def exponencial():
         return p_valor
 
     # Datos de ejemplo: tiempos por vuelta
-    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105])  # Nuevos tiempos por vuelta en segundos
+    tiempos_por_vuelta = np.array([94.961, 95.413, 94.682, 95.091, 94.880, 95.200, 95.418, 95.679, 95.887, 96.224])
 
     # Ajuste de una función exponencial a los datos de tiempos por vuelta
     parametros_optimos, cov_matrix = ajustar_exponencial(tiempos_por_vuelta)
@@ -244,6 +244,178 @@ def logaritmo():
     plt.grid(True)
     plt.show()
 
+def logaritmo():
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
+    from scipy.stats import f
+
+    # Función logarítmica
+    def funcion_logaritmica(x, a, b):
+        return a * np.log(b * x)
+
+    # Función para ajustar una función logarítmica a los datos
+    def ajustar_logaritmica(tiempos_por_vuelta):
+        # Crear un arreglo para el eje x (vuelta)
+        x = np.arange(1, len(tiempos_por_vuelta) + 1)
+
+        # Transformar los datos logarítmicamente
+        tiempos_log = np.log(tiempos_por_vuelta)
+
+        # Estimaciones iniciales para los parámetros
+        a_init = max(tiempos_log) - min(tiempos_log)  # Estimación inicial para 'a'
+        b_init = 1.0  # Estimación inicial para 'b'
+
+        # Ajustar una función logarítmica a los datos
+        parametros_optimos, _ = curve_fit(funcion_logaritmica, x, tiempos_log, p0=[a_init, b_init], maxfev=10000)
+
+        # Obtener los parámetros finales de la función logarítmica
+        a = parametros_optimos[0]
+        b = parametros_optimos[1]
+
+        # Generar los valores ajustados
+        y_pred = a * np.log(b * x)
+
+        # Calcular el residuo cuadrático
+        residuos = tiempos_log - funcion_logaritmica(x, *parametros_optimos)
+        residuo_cuadratico = np.sum(residuos ** 2)
+
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - 2)
+
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((funcion_logaritmica(x, *parametros_optimos) - np.mean(tiempos_log)) ** 2)
+
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / 2) / residuo_cuadratico_reducido
+
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, 2, len(tiempos_por_vuelta) - 2)
+
+        # Devolver los parámetros del ajuste y el p-valor
+        return a, b, p_valor
+
+    # Datos de tiempos por vuelta
+    tiempos_por_vuelta = np.array([103.25, 103.84, 104.69, 104.45, 105, 106, 105.85, 106.56])  # Ejemplo con 5 tiempos por vuelta
+
+    # Realizar el ajuste logarítmico
+    a, b, p_valor = ajustar_logaritmica(tiempos_por_vuelta)
+
+    # Mostrar los resultados
+    print("Parámetros del ajuste logarítmico:")
+    print("a =", a)
+    print("b =", b)
+    print("P-valor del ajuste logarítmico:", p_valor)
+
+    # Graficar los resultados
+    x = np.arange(1, len(tiempos_por_vuelta) + 1)
+    y_pred = a * np.log(b * x)
+
+    plt.scatter(x, tiempos_por_vuelta, label='Tiempos por vuelta reales')
+    plt.plot(x, np.exp(y_pred), color='red', label='Ajuste logarítmico')
+    plt.title('Ajuste logarítmico a los tiempos por vuelta')
+    plt.xlabel('Vuelta')
+    plt.ylabel('Tiempo por vuelta (s)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+def nuevologaritmo():
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from scipy.optimize import curve_fit
+    from scipy.stats import f
+
+    # Función logarítmica
+    def funcion_logaritmica(x, a, b):
+        return a * np.log(b * x)
+
+    # Función para ajustar una función logarítmica a los datos
+    def ajustar_logaritmica(tiempos_por_vuelta):
+        # Crear un arreglo para el eje x (vuelta)
+        x = np.arange(1, len(tiempos_por_vuelta) + 1)
+
+        # Transformar los datos logarítmicamente
+        tiempos_log = np.log(tiempos_por_vuelta)
+
+        # Estimaciones iniciales para los parámetros
+        a_init = max(tiempos_log) - min(tiempos_log)  # Estimación inicial para 'a'
+        b_init = 1.0  # Estimación inicial para 'b'
+
+        # Ajustar una función logarítmica a los datos
+        parametros_optimos, _ = curve_fit(funcion_logaritmica, x, tiempos_log, p0=[a_init, b_init], maxfev=10000)
+
+        # Obtener los parámetros finales de la función logarítmica
+        a = parametros_optimos[0]
+        b = parametros_optimos[1]
+
+        # Generar los valores ajustados
+        y_pred = a * np.log(b * x)
+
+        # Calcular el residuo cuadrático
+        residuos = tiempos_log - funcion_logaritmica(x, *parametros_optimos)
+        residuo_cuadratico = np.sum(residuos ** 2)
+
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - 2)
+
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((funcion_logaritmica(x, *parametros_optimos) - np.mean(tiempos_log)) ** 2)
+
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / 2) / residuo_cuadratico_reducido
+
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, 2, len(tiempos_por_vuelta) - 2)
+
+        # Devolver los parámetros del ajuste y el p-valor
+        return a, b, p_valor
+
+    # Función para estimar tiempos de vuelta para vueltas futuras
+    def estimar_tiempos_futuros(a, b, vueltas_futuras):
+        x_futuras = np.arange(len(tiempos_por_vuelta) + 1, len(tiempos_por_vuelta) + 1 + vueltas_futuras)
+        y_pred_futuras = a * np.log(b * x_futuras)
+        tiempos_futuros = np.exp(y_pred_futuras)
+        return tiempos_futuros
+
+    # Datos de tiempos por vuelta
+    tiempos_por_vuelta = np.array([94.961, 95.413, 94.682, 95.091, 94.880, 95.200, 95.418, 95.679, 95.887, 96.224])  # Ejemplo con 8 tiempos por vuelta
+    vueltas_futuras = 5  # Número de vueltas a predecir
+
+    # Realizar el ajuste logarítmico
+    a, b, p_valor = ajustar_logaritmica(tiempos_por_vuelta)
+
+    # Estimar los tiempos para las vueltas futuras
+    tiempos_futuros = estimar_tiempos_futuros(a, b, vueltas_futuras)
+
+    # Crear lista con tiempos originales y estimados para vueltas futuras
+    tiempos_originales_y_estimados = list(tiempos_por_vuelta) + list(tiempos_futuros)
+
+    # Mostrar los resultados
+    print("Parámetros del ajuste logarítmico:")
+    print("a =", a)
+    print("b =", b)
+    print("P-valor del ajuste logarítmico:", p_valor)
+    print("Tiempos originales y estimados para las próximas", vueltas_futuras, "vueltas:")
+    print(tiempos_originales_y_estimados)
+
+    # Graficar los resultados
+    x = np.arange(1, len(tiempos_por_vuelta) + 1)
+    y_pred = a * np.log(b * x)
+
+    plt.scatter(x, tiempos_por_vuelta, label='Tiempos por vuelta reales')
+    plt.plot(x, np.exp(y_pred), color='red', label='Ajuste logarítmico')
+    plt.plot(np.arange(len(tiempos_por_vuelta) + 1, len(tiempos_por_vuelta) + 1 + vueltas_futuras), tiempos_futuros, 'gx', label='Tiempos estimados para vueltas futuras')
+    plt.title('Ajuste logarítmico y estimación de tiempos para futuras vueltas')
+    plt.xlabel('Vuelta')
+    plt.ylabel('Tiempo por vuelta (s)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+
+
 
 
 def calcular():
@@ -251,4 +423,4 @@ def calcular():
     polinomio_grado2()
 
 
-calcular()
+exponencial()
