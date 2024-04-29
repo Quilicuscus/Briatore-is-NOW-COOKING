@@ -327,7 +327,10 @@ def logaritmo1():
     plt.show()
 
 
-def nuevologaritmo():
+def nuevologaritmo(tiempos_por_vuelta_aux: list):
+    
+    # La variable vueltas es la que tiene almacenada los tiempos por vuelta a analizar
+    vueltas = tiempos_por_vuelta_aux
     import numpy as np
     import matplotlib.pyplot as plt
     from scipy.optimize import curve_fit
@@ -421,7 +424,7 @@ def nuevologaritmo():
     plt.show()
 
 
-polinomio_grado2()
-polinomio_grado2_prueba()
-
+# polinomio_grado2()
+# polinomio_grado2_prueba()
+nuevologaritmo(vueltas)
 
