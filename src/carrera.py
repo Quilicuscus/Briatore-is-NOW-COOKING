@@ -6,23 +6,39 @@ from circuito import Circuito
 class Carrera:
     """
     you need to reinstate the lap before, that's not right
-    Esto es como el tablero del proyecto final de progra
 
     Atributos:
-    coche: el coche para el que se diseñara la estrategia
-    circuito: el circuito donde se realiza la carrera
+    coche:
+        Coche para el que se diseñará la estrategia
+    circuito:
+        Circuito donde se realiza la carrera
 
     Métodos:
-    tiempo_vuelta(): devuelve el tiempo de una vuelta al circuito en base a las condiciones presentes
+    vuelta() -> bool
+        Simula una vuelta de carrera
     """
+    def __init__(self, max_gas:float, tiempo_base:float, ganancia_goma:float):
+        """
+        Construye la clase con los argumentos dados
 
-    def __init__(self, perdida_gas:float, perdida_ruedas:float, max_gas:int, tiempo_base:float,
-                 ganancia_goma:float):
-        self.__coche = Coche(perdida_gas, perdida_ruedas, max_gas)
+        Argumentos:
+        max_gas:float
+            Capacidad del tanque de combustible del coche
+        tiempo_base:float
+            Tiempo sin tener en cuenta las condiciones de carrera del circuito
+        ganancia_goma:float
+            Tiempo ahorrado cada vuelta por coche y vuelta recorrida del circuito
+        """
+        self.__coche = Coche(max_gas)
         self.__circuito = Circuito(tiempo_base, ganancia_goma)
 
 
-    def tiempo_vuelta(self) -> float:
-        """Calcula el tiempo de una vuelta en base al tiempo de vuelta base, la goma en el circuito,
-        el combustible en el tanque y la degradación de las ruedas."""
-        return self.__circuito.TIEMPO_BASE - self.__circuito.engomado + self.__coche.peso_gas() + self.__coche.degradacion()
+    def vuelta(self) -> bool:
+        """
+        Simula una vuelta de carrera
+
+        Devuelve:
+            Si quedan coches en la carrera
+        """
+        self.__coche.vuelta()
+        return self.__circuito.vuelta()

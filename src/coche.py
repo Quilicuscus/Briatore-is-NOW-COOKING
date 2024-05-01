@@ -3,56 +3,61 @@ class Coche:
     FIAAAAAUUUUUUN
 
     Constantes:
-    PERDIDA_GAS: tiempo extra en recorrer cada vuelta por cada litro de combustible en el depósito
-    PERDIDA_RUEDAS: tiempo extra en recorrer cada vuelta por cada vuelta recorrida con las ruedas
-    MAX_GAS: capacidad del tanque de combustible
+    MAX_GAS:float
+        Capacidad del tanque de combustible
 
     Atributos:
-    litros_gas: litros en el tanque de combustible en un momento dado
-    vida_ruedas: vueltas recorridas por las ruedas en un momento dado - Sustituir por clase Ruedas
-    - Consumo gas??
+    litros_gas:float
+        Litros en el tanque de combustible
+    vida_ruedas:int
+        Vueltas recorridas por las ruedas
+
     Métodos:
-    peso_gas(): devuelve la pérdida de tiempo en una vuelta a causa del peso del combustible actual
-    degradacion(): devuelve la pérdida de tiempo en una vuelta a causa de la degradación de las gomas
-    parar(): lleva el coche a boxes
+    vuelta() -> None
+        Recorre una vuelta al circuito
+    parar(gas:float, ruedas:bool) -> None
+        Lleva el coche a boxes
     """
+    def __init__(self, max_gas:float, litros_gas:float=-1, vida_ruedas:int=0):
+        """
+        Asigna los atributos indicados al coche
 
-    def __init__(self, perdida_gas:float, perdida_ruedas:float, max_gas:int, litros_gas:float=-1,
-                 vida_ruedas:int=0):
-        self.PERDIDA_GAS = perdida_gas
-        self.PERDIDA_RUEDAS = perdida_ruedas
+        Argumentos:
+        max_gas:float
+            Capacidad del tanque de combustible
+        litros_gas:float
+            Litros de combustible a la salida. Lleno por defecto
+        vida_ruedas:int
+            Vida de las ruedas a la salida. Nuevas por defecto
+        """
         self.MAX_GAS = max_gas
-
         self.__litros_gas = max_gas if litros_gas < 0 else litros_gas
         self.__vida_ruedas = vida_ruedas
-        #Añadir ruedas
 
 
-    #def vuelta(self,....)
-    #def update(meter nuevos atributos con csv - para cambiar en mitad de carrera?)
+    def vuelta(self) -> None:
+        """
+        Recorre una vuelta al circuito
+        Actualiza el combustible en depósito y la vida de las ruedas
+        """
+        self.__litros_gas -= 0 # TODO: safety car y tal
+        self.__vida_ruedas += 1
 
-    def peso_gas(self) -> float:
-        """Devuelve la pérdida de tiempo esperada durante una vuelta causada por el peso del
-        combustible en dicha vuelta"""
-        return self.PERDIDA_GAS * self.__litros_gas
 
-    def degradacion(self) -> float:
-        """Devuelve la pérdida de tiempo esperada en una vuelta a causa de la degradación de las
-        gomas del coche en dicha vuelta"""
-        return self.PERDIDA_RUEDAS * self.__vida_ruedas #Clase rueda??
+    def parar(self, gas:float, ruedas:bool=True) -> None:
+        """
+        Lleva el coche a boxes
+        Resetea la degradación de las ruedas y añade el combustible al coche
 
-    def parar(self, tiempo_pit:float, gas:float, ruedas:bool=True, repairs:float=0) -> float:
-        """Este método simula una parada en boxes. Calcula el tiempo de la parada en base al tiempo de
-        recorrer el pitlane, el combustible a repostar, si se cambian las ruedas y las posibles
-        reparaciones. También resetea la degradación de las ruedas y añade el combustible al coche"""
-        ##Fast repair? - A lo mejor hay que hacer algo con el tiempo de la vuelta
+        Argumentos:
+        gas:float
+            Gas a repostar
+        ruedas:bool
+            Si se cambian ruedas en la parada
+        """
         # Añadir combustible al tanque
-        if self.__litros_gas + gas >= self.MAX_GAS:
-            self.__litros_gas = self.MAX_GAS
-        else:
-            self.__litros_gas += gas
+        self.__litros_gas = \
+            self.MAX_GAS if gas >= self.MAX_GAS - self.__litros_gas else self.__litros_gas + gas
 
         # Poner neumáticos nuevos
-        self.__vida_ruedas = 0
-
-        #Habria que hacer return del tiempo de la parada - tiempo/litro repostado o algo??
+        self.__vida_ruedas = 0 if ruedas else self.__vida_ruedas
