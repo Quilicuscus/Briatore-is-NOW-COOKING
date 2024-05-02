@@ -12,7 +12,7 @@ class Circuito:
     coches:int
         Número de coches en pista
     engomado:float
-        Ganancia de tiempo por goma acumulada
+        Goma en el circuito en número de vueltas recorridas por todos los coches
 
     Métodos:
     vuelta(abandonos:int) -> bool
@@ -50,6 +50,6 @@ class Circuito:
         Devuelve:
             Si quedan coches en la carrera
         """
-        self.__engomado += self.GANANCIA_GOMA * self.__coches
+        self.__engomado += self.__coches
         self.__coches = 0 if abandonos >= self.__coches else self.__coches - abandonos
         return bool(self.__coches)
