@@ -1,5 +1,6 @@
 import csv
 
+from strategy_gate import StrategyGate
 from coche import Coche
 from circuito import Circuito
 from vuelta import Vuelta
@@ -62,8 +63,8 @@ class Carrera:
                 for fila in reader:
                     vueltas.append(Vuelta(float(fila[0]), float(fila[1]),
                                           int(fila[2]), int(fila[3])))
-        except:
-            pass
+        except Exception as error:
+            raise StrategyGate("Archivo CSV no válido") from error
         return vueltas
 
 
