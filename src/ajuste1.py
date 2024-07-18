@@ -5,7 +5,7 @@ from scipy.stats import f
 
 vueltas = [94.961, 95.413, 94.682, 95.091, 94.880, 95.200, 95.418, 95.679, 95.887, 96.224]
 
-def polinomio_grado2():
+def polinomio_grado2(tiempos_por_vuelta_siuu_aux):
     # Función para ajustar un polinomio de grado 2 a los datos de tiempos por vuelta
     def ajustar_polinomio(tiempos_por_vuelta):
         x = np.arange(len(tiempos_por_vuelta))
@@ -34,7 +34,7 @@ def polinomio_grado2():
         return p_valor
 
     # Datos de ejemplo: tiempos por vuelta
-    tiempos_por_vuelta = np.array(vueltas)  # Nuevos tiempos por vuelta en segundos
+    tiempos_por_vuelta = np.array(tiempos_por_vuelta_siuu_aux)  # Nuevos tiempos por vuelta en segundos
 
     # Ajuste de un polinomio de grado 2 a los datos de tiempos por vuelta
     coeficientes, cov_matrix = ajustar_polinomio(tiempos_por_vuelta)
@@ -61,87 +61,155 @@ def polinomio_grado2():
     plt.grid(True)
     plt.show()
 
-def polinomio_grado2_prueba():
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from scipy.optimize import curve_fit
-    from scipy.stats import f
 
+def polinomio_grado2_prueba_con_original(tiempos_por_vuelta_33, vueltas_a_predecir=5):
     # Datos de ejemplo: tiempos por vuelta
-    vueltas = [94.961, 95.413, 94.682, 95.091, 94.880, 95.200, 95.418, 95.679, 95.887, 96.224]
+    vueltas = tiempos_por_vuelta_33
 
-    def polinomio_grado2(num_vueltas_futuras):
-        # Función para ajustar un polinomio de grado 2 a los datos de tiempos por vuelta
-        def ajustar_polinomio(tiempos_por_vuelta):
-            x = np.arange(len(tiempos_por_vuelta))
-            coeficientes, cov_matrix = curve_fit(lambda x, *c: np.polyval(c, x), x, tiempos_por_vuelta, p0=[0, 0, 0])
-            return coeficientes, cov_matrix
-
-        # Función para calcular el desgaste por vuelta a partir de los coeficientes del polinomio
-        def calcular_desgaste(coeficientes):
-            # Derivada de un polinomio de grado 2 es una función lineal
-            desgaste_por_vuelta = 2 * coeficientes[0] * np.arange(len(coeficientes) - 1, 0, -1)
-            return desgaste_por_vuelta
-
-        # Función para calcular un único p-valor para la distribución general de los coeficientes
-        def obtener_p_valor_general(tiempos_por_vuelta, coeficientes, cov_matrix, num_params):
-            # Calcular el residuo cuadrático
-            residuos = tiempos_por_vuelta - np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta)))
-            residuo_cuadratico = np.sum(residuos ** 2)
-            # Calcular el residuo cuadrático reducido
-            residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - num_params)
-            # Calcular la suma de cuadrados del modelo
-            suma_cuadrados_modelo = np.sum((np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta))) - np.mean(tiempos_por_vuelta)) ** 2)
-            # Calcular la estadística F
-            f_stat = (suma_cuadrados_modelo / num_params) / residuo_cuadratico_reducido
-            # Calcular el p-valor
-            p_valor = 1 - f.cdf(f_stat, num_params, len(tiempos_por_vuelta) - num_params)
-            return p_valor
-
-        # Datos de tiempos por vuelta
-        tiempos_por_vuelta = np.array(vueltas)  # Nuevos tiempos por vuelta en segundos
-
-        # Ajuste de un polinomio de grado 2 a los datos de tiempos por vuelta
-        coeficientes, cov_matrix = ajustar_polinomio(tiempos_por_vuelta)
-
-        # Número de parámetros en el modelo (grado del polinomio + 1)
-        num_params = len(coeficientes)
-
-        # Calcular el p-valor general para la distribución de los coeficientes
-        p_valor_general = obtener_p_valor_general(tiempos_por_vuelta, coeficientes, cov_matrix, num_params)
-
-        # Calcular futuros tiempos por vuelta en función del ajuste obtenido
-        x_futuro = np.arange(len(tiempos_por_vuelta), len(tiempos_por_vuelta) + num_vueltas_futuras)
-        tiempos_futuros = np.polyval(coeficientes, x_futuro)
-
-        # Imprimir el array con las vueltas existentes y las vueltas futuras
-        vueltas_completas = np.concatenate((tiempos_por_vuelta, tiempos_futuros))
-        print("Vueltas completas (existentes + futuras):")
-        print(vueltas_completas)
-
-        # Imprimir el p-valor del ajuste
-        print(f"P-valor general del ajuste polinomico de grado 2: {p_valor_general}")
-
-        # Gráfico del ajuste polinomial y futuros tiempos por vuelta
+    # Función para ajustar un polinomio de grado 2 a los datos de tiempos por vuelta
+    def ajustar_polinomio(tiempos_por_vuelta):
         x = np.arange(len(tiempos_por_vuelta))
-        x_futuro = np.arange(len(tiempos_por_vuelta), len(tiempos_por_vuelta) + num_vueltas_futuras)
-        y_pred = np.polyval(coeficientes, x)
+        coeficientes, cov_matrix = curve_fit(lambda x, *c: np.polyval(c, x), x, tiempos_por_vuelta, p0=[0, 0, 0])
+        return coeficientes, cov_matrix
+
+    # Función para calcular un único p-valor para la distribución general de los coeficientes
+    def obtener_p_valor_general(tiempos_por_vuelta, coeficientes, cov_matrix, num_params):
+        # Calcular el residuo cuadrático
+        residuos = tiempos_por_vuelta - np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta)))
+        residuo_cuadratico = np.sum(residuos ** 2)
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - num_params)
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta))) - np.mean(tiempos_por_vuelta)) ** 2)
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / num_params) / residuo_cuadratico_reducido
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, num_params, len(tiempos_por_vuelta) - num_params)
+        return p_valor
+
+    # Función para calcular futuros tiempos por vuelta en función del ajuste obtenido
+    def calcular_tiempos_futuros(coeficientes, num_vueltas_futuras):
+        x_futuro = np.arange(len(vueltas), len(vueltas) + num_vueltas_futuras)
         tiempos_futuros = np.polyval(coeficientes, x_futuro)
+        return tiempos_futuros
 
-        plt.plot(np.concatenate((x, x_futuro)), np.concatenate((tiempos_por_vuelta, tiempos_futuros)), 'o', label='Tiempos por vuelta y futuros')
-        plt.plot(np.concatenate((x, x_futuro)), np.concatenate((y_pred, tiempos_futuros)), label='Ajuste polinomial y futuros tiempos')
-        plt.title('Ajuste polinomial de grado 2 y futuros tiempos por vuelta')
-        plt.xlabel('Vuelta')
-        plt.ylabel('Tiempo por vuelta (s)')
-        plt.legend()
-        plt.grid(True)
-        plt.show()
+    # Ajuste de un polinomio de grado 2 a los datos de tiempos por vuelta
+    coeficientes, cov_matrix = ajustar_polinomio(vueltas)
 
-    # Llamada a la función para calcular y mostrar futuros tiempos por vuelta para 3 vueltas adicionales
-    polinomio_grado2(num_vueltas_futuras=3)
+    # Número de parámetros en el modelo (grado del polinomio + 1)
+    num_params = len(coeficientes)
+
+    # Calcular el p-valor general para la distribución de los coeficientes
+    p_valor_general = obtener_p_valor_general(vueltas, coeficientes, cov_matrix, num_params)
+
+    # Calcular futuros tiempos por vuelta en función del ajuste obtenido
+    tiempos_futuros = calcular_tiempos_futuros(coeficientes, vueltas_a_predecir)
+
+    # Combinar tiempos por vuelta originales y estimados
+    tiempos_totales = np.concatenate((vueltas, tiempos_futuros))
+
+    # Imprimir el array con las vueltas completas (existentes + futuras)
+    print("Vueltas completas (existentes + futuras):")
+    print(tiempos_totales)
+
+    # Imprimir el p-valor del ajuste
+    print(f"P-valor general del ajuste polinómico de grado 2: {p_valor_general}")
+
+    # Gráfico del ajuste polinomial y futuros tiempos por vuelta
+    x = np.arange(len(vueltas))
+    x_futuro = np.arange(len(vueltas), len(vueltas) + vueltas_a_predecir)
+    y_pred = np.polyval(coeficientes, x)
+    tiempos_futuros = np.polyval(coeficientes, x_futuro)
+
+    plt.plot(np.concatenate((x, x_futuro)), np.concatenate((vueltas, tiempos_futuros)), 'o', label='Tiempos por vuelta y futuros')
+    plt.plot(np.concatenate((x, x_futuro)), np.concatenate((y_pred, tiempos_futuros)), label='Ajuste polinomial y futuros tiempos')
+    plt.title('Ajuste polinomial de grado 2 y futuros tiempos por vuelta')
+    plt.xlabel('Vuelta')
+    plt.ylabel('Tiempo por vuelta (s)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Devolver todos los tiempos por vuelta calculados
+    return tiempos_totales
 
 
-def polinomio_grado3():
+def polinomio_grado2_prueba_sin_original(vueltas_originales, vueltas_a_predecir=5):
+    # Función para ajustar un polinomio de grado 2 a los datos de tiempos por vuelta
+    def ajustar_polinomio(tiempos_por_vuelta):
+        x = np.arange(len(tiempos_por_vuelta))
+        coeficientes, cov_matrix = curve_fit(lambda x, *c: np.polyval(c, x), x, tiempos_por_vuelta, p0=[0, 0, 0])
+        return coeficientes, cov_matrix
+
+    # Función para calcular un único p-valor para la distribución general de los coeficientes
+    def obtener_p_valor_general(tiempos_por_vuelta, coeficientes, cov_matrix, num_params):
+        # Calcular el residuo cuadrático
+        residuos = tiempos_por_vuelta - np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta)))
+        residuo_cuadratico = np.sum(residuos ** 2)
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - num_params)
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((np.polyval(coeficientes, np.arange(len(tiempos_por_vuelta))) - np.mean(tiempos_por_vuelta)) ** 2)
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / num_params) / residuo_cuadratico_reducido
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, num_params, len(tiempos_por_vuelta) - num_params)
+        return p_valor
+
+    # Función para calcular futuros tiempos por vuelta en función del ajuste obtenido
+    def calcular_tiempos_futuros(coeficientes, num_vueltas_futuras):
+        x_futuro = np.arange(len(vueltas_originales), len(vueltas_originales) + num_vueltas_futuras)
+        tiempos_futuros = np.polyval(coeficientes, x_futuro)
+        return tiempos_futuros
+
+    # Ajuste de un polinomio de grado 2 a los datos de tiempos por vuelta
+    coeficientes, cov_matrix = ajustar_polinomio(vueltas_originales)
+
+    # Número de parámetros en el modelo (grado del polinomio + 1)
+    num_params = len(coeficientes)
+
+    # Calcular el p-valor general para la distribución de los coeficientes
+    p_valor_general = obtener_p_valor_general(vueltas_originales, coeficientes, cov_matrix, num_params)
+
+    # Calcular futuros tiempos por vuelta en función del ajuste obtenido
+    tiempos_futuros = calcular_tiempos_futuros(coeficientes, vueltas_a_predecir)
+
+    # Combinar tiempos por vuelta originales y estimados
+    tiempos_totales = np.concatenate((np.polyval(coeficientes, np.arange(len(vueltas_originales))), tiempos_futuros))
+
+    # Imprimir el array con todas las vueltas calculadas
+    print("Tiempos totales calculados a partir del ajuste polinómico:")
+    print(tiempos_totales)
+
+    # Imprimir el p-valor del ajuste
+    print(f"P-valor general del ajuste polinómico de grado 2: {p_valor_general}")
+
+    # Gráfico del ajuste polinomial y futuros tiempos por vuelta
+    x = np.arange(len(vueltas_originales))
+    x_futuro = np.arange(len(vueltas_originales), len(vueltas_originales) + vueltas_a_predecir)
+    y_pred = np.polyval(coeficientes, x)
+    tiempos_futuros = np.polyval(coeficientes, x_futuro)
+
+    plt.plot(np.concatenate((x, x_futuro)), np.concatenate((np.polyval(coeficientes, np.arange(len(vueltas_originales))), tiempos_futuros)), 'o', label='Tiempos por vuelta y futuros')
+    plt.plot(np.concatenate((x, x_futuro)), np.concatenate((y_pred, tiempos_futuros)), label='Ajuste polinomial y futuros tiempos')
+    plt.title('Ajuste polinomial de grado 2 y futuros tiempos por vuelta')
+    plt.xlabel('Vuelta')
+    plt.ylabel('Tiempo por vuelta (s)')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    # Devolver todos los tiempos por vuelta calculados
+    return tiempos_totales
+
+
+
+
+
+
+
+def polinomio_grado3(vueltas):
+    tiempos_por_vuelta=vueltas
     # Función polinómica de grado 3
     def funcion_polinomica(x, a, b, c, d):
         return a * x**3 + b * x**2 + c * x + d
@@ -194,6 +262,162 @@ def polinomio_grado3():
     plt.legend()
     plt.grid(True)
     plt.show()
+
+
+def polinomio_grado3_estimacion(tiempos_por_vuelta_aux, vueltas_futuras=5):
+    # Función polinómica de grado 3
+    def funcion_polinomica(x, a, b, c, d):
+        return a * x**3 + b * x**2 + c * x + d
+
+    # Función para ajustar una función polinómica de grado 3 a los datos de tiempos por vuelta
+    def ajustar_polinomica_grado_3(tiempos_por_vuelta):
+        x = np.arange(len(tiempos_por_vuelta))
+        parametros_optimos, cov_matrix = curve_fit(funcion_polinomica, x, tiempos_por_vuelta)
+        return parametros_optimos, cov_matrix
+
+    # Función para calcular un único p-valor para la distribución general de los coeficientes
+    def obtener_p_valor_general(tiempos_por_vuelta, parametros_optimos, cov_matrix, num_params):
+        # Calcular el residuo cuadrático
+        residuos = tiempos_por_vuelta - funcion_polinomica(np.arange(len(tiempos_por_vuelta)), *parametros_optimos)
+        residuo_cuadratico = np.sum(residuos ** 2)
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - num_params)
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((funcion_polinomica(np.arange(len(tiempos_por_vuelta)), *parametros_optimos) - np.mean(tiempos_por_vuelta)) ** 2)
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / num_params) / residuo_cuadratico_reducido
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, num_params, len(tiempos_por_vuelta) - num_params)
+        return p_valor
+
+    # Función para estimar tiempos de futuras vueltas
+    def estimar_tiempos_futuros(parametros_optimos, num_vueltas_originales, vueltas_futuras):
+        x_futuras = np.arange(num_vueltas_originales, num_vueltas_originales + vueltas_futuras)
+        y_pred_futuras = funcion_polinomica(x_futuras, *parametros_optimos)
+        return y_pred_futuras
+
+    # Datos de ejemplo: tiempos por vuelta
+    tiempos_por_vuelta = np.array(tiempos_por_vuelta_aux)
+
+    # Ajuste de una función polinómica de grado 3 a los datos de tiempos por vuelta
+    parametros_optimos, cov_matrix = ajustar_polinomica_grado_3(tiempos_por_vuelta)
+
+    # Número de parámetros en el modelo
+    num_params = len(parametros_optimos)
+
+    # Calcular el p-valor general para la distribución de los coeficientes
+    p_valor_general = obtener_p_valor_general(tiempos_por_vuelta, parametros_optimos, cov_matrix, num_params)
+
+    # Estimar tiempos de futuras vueltas usando la función ajustada
+    tiempos_futuros_estimados = estimar_tiempos_futuros(parametros_optimos, len(tiempos_por_vuelta), vueltas_futuras)
+
+    # Combinar tiempos por vuelta originales y estimados
+    tiempos_totales = np.concatenate((tiempos_por_vuelta, tiempos_futuros_estimados))
+
+    # Preguntar al usuario si desea graficar el resultado
+    graficar = input("¿Desea graficar el resultado? (y/n): ")
+
+    if graficar == "y":
+        # Gráfico del ajuste polinómico
+        x = np.arange(len(tiempos_por_vuelta))
+        y_pred = funcion_polinomica(x, *parametros_optimos)
+
+        plt.plot(x, tiempos_por_vuelta, 'o', label='Tiempos por vuelta reales')
+        plt.plot(x, y_pred, label='Ajuste polinómico de grado 3')
+
+        # Graficar los tiempos estimados para futuras vueltas
+        x_futuras = np.arange(len(tiempos_por_vuelta), len(tiempos_por_vuelta) + vueltas_futuras)
+        plt.plot(x_futuras, tiempos_futuros_estimados, 'gx', label='Tiempos estimados para vueltas futuras')
+
+        plt.title('Ajuste polinómico de grado 3 y estimación de tiempos para futuras vueltas')
+        plt.xlabel('Vuelta')
+        plt.ylabel('Tiempo por vuelta (s)')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+    # Imprimir los resultados
+    print(f"P-valor general del ajuste polinómico de grado 3: {p_valor_general}")
+    print("Tiempos totales (incluyendo estimaciones):")
+    print(tiempos_totales)
+
+def polinomio_grado3_estimacion_sin_original(tiempos_por_vuelta_aux, vueltas_futuras=5):
+    # Función polinómica de grado 3
+    def funcion_polinomica(x, a, b, c, d):
+        return a * x**3 + b * x**2 + c * x + d
+
+    # Función para ajustar una función polinómica de grado 3 a los datos de tiempos por vuelta
+    def ajustar_polinomica_grado_3(tiempos_por_vuelta):
+        x = np.arange(len(tiempos_por_vuelta))
+        parametros_optimos, cov_matrix = curve_fit(funcion_polinomica, x, tiempos_por_vuelta)
+        return parametros_optimos, cov_matrix
+
+    # Función para calcular un único p-valor para la distribución general de los coeficientes
+    def obtener_p_valor_general(tiempos_por_vuelta, parametros_optimos, cov_matrix, num_params):
+        # Calcular el residuo cuadrático
+        residuos = tiempos_por_vuelta - funcion_polinomica(np.arange(len(tiempos_por_vuelta)), *parametros_optimos)
+        residuo_cuadratico = np.sum(residuos ** 2)
+        # Calcular el residuo cuadrático reducido
+        residuo_cuadratico_reducido = residuo_cuadratico / (len(tiempos_por_vuelta) - num_params)
+        # Calcular la suma de cuadrados del modelo
+        suma_cuadrados_modelo = np.sum((funcion_polinomica(np.arange(len(tiempos_por_vuelta)), *parametros_optimos) - np.mean(tiempos_por_vuelta)) ** 2)
+        # Calcular la estadística F
+        f_stat = (suma_cuadrados_modelo / num_params) / residuo_cuadratico_reducido
+        # Calcular el p-valor
+        p_valor = 1 - f.cdf(f_stat, num_params, len(tiempos_por_vuelta) - num_params)
+        return p_valor
+
+    # Función para estimar tiempos usando la función ajustada
+    def estimar_tiempos(parametros_optimos, total_vueltas):
+        x_totales = np.arange(total_vueltas)
+        y_pred_totales = funcion_polinomica(x_totales, *parametros_optimos)
+        return y_pred_totales
+
+    # Datos de ejemplo: tiempos por vuelta
+    tiempos_por_vuelta = np.array(tiempos_por_vuelta_aux)
+
+    # Ajuste de una función polinómica de grado 3 a los datos de tiempos por vuelta
+    parametros_optimos, cov_matrix = ajustar_polinomica_grado_3(tiempos_por_vuelta)
+
+    # Número de parámetros en el modelo
+    num_params = len(parametros_optimos)
+
+    # Calcular el p-valor general para la distribución de los coeficientes
+    p_valor_general = obtener_p_valor_general(tiempos_por_vuelta, parametros_optimos, cov_matrix, num_params)
+
+    # Estimar tiempos usando la función ajustada para todas las vueltas (originales + futuras)
+    total_vueltas = len(tiempos_por_vuelta) + vueltas_futuras
+    tiempos_estimados_totales = estimar_tiempos(parametros_optimos, total_vueltas)
+
+    # Preguntar al usuario si desea graficar el resultado
+    graficar = input("¿Desea graficar el resultado? (y/n): ")
+
+    if graficar.lower() == "y":
+        # Gráfico del ajuste polinómico
+        x = np.arange(len(tiempos_por_vuelta))
+        y_pred = funcion_polinomica(x, *parametros_optimos)
+
+        plt.plot(x, tiempos_por_vuelta, 'o', label='Tiempos por vuelta reales')
+        plt.plot(np.arange(total_vueltas), tiempos_estimados_totales, 'b-', label='Tiempos estimados (ajuste)')
+
+        plt.title('Ajuste polinómico de grado 3 y estimación de tiempos para vueltas')
+        plt.xlabel('Vuelta')
+        plt.ylabel('Tiempo por vuelta (s)')
+        plt.legend()
+        plt.grid(True)
+        plt.show()
+
+    # Imprimir los resultados
+    print(f"P-valor general del ajuste polinómico de grado 3: {p_valor_general}")
+    print("Tiempos estimados totales (todas las vueltas calculadas a partir del ajuste):")
+    print(tiempos_estimados_totales)
+
+
+
+
+
+
+
 
 def exponencial(tiempos_por_vuelta_aux):
     vueltas = tiempos_por_vuelta_aux
@@ -673,10 +897,14 @@ vueltas_ver_fp2_COTA = [101.285, 101.452, 101.611, 101.710, 101.310, 103.686]
 # nuevologaritmo(vueltas_ver_fp2_COTA)
 # estimacion_logaritimica(vueltas_ver_fp2_COTA)
 
-exponencial(vueltas_ver_fp2_COTA)
-exponencial_estimado(vueltas_ver_fp2_COTA)
-exponencial_estimado_2(vueltas_ver_fp2_COTA)
+#exponencial(vueltas_ver_fp2_COTA)
+#exponencial_estimado(vueltas_ver_fp2_COTA)
+#exponencial_estimado_2(vueltas_ver_fp2_COTA)
 
+#exponencial(vueltas_ver_fp2_COTA)
+#exponencial_estimado(vueltas_ver_fp2_COTA)
+# exponencial_estimado_2(vueltas_ver_fp2_COTA)
 
-
-
+polinomio_grado2(vueltas_ver_fp2_COTA)
+polinomio_grado2_prueba_con_original(vueltas_ver_fp2_COTA)
+polinomio_grado2_prueba_sin_original(vueltas_ver_fp2_COTA)
