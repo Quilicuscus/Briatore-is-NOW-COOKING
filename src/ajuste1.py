@@ -60,10 +60,11 @@ def polinomio_grado2(tiempos_por_vuelta_siuu_aux):
     plt.legend()
     plt.grid(True)
     plt.show()
+    return p_valor_general
 
 
 def polinomio_grado2_prueba_con_original(tiempos_por_vuelta_33, vueltas_a_predecir=5):
-    # Datos de ejemplo: tiempos por vuelta
+    
     vueltas = tiempos_por_vuelta_33
 
     # Función para ajustar un polinomio de grado 2 a los datos de tiempos por vuelta
@@ -130,8 +131,10 @@ def polinomio_grado2_prueba_con_original(tiempos_por_vuelta_33, vueltas_a_predec
     plt.grid(True)
     plt.show()
 
+    #resultado_pvalor=p_valor_general
+    #resultado_vueltas=tiempos_totales
     # Devolver todos los tiempos por vuelta calculados
-    return tiempos_totales
+    return tiempos_totales, p_valor_general
 
 
 def polinomio_grado2_prueba_sin_original(vueltas_originales, vueltas_a_predecir=5):
@@ -905,6 +908,6 @@ vueltas_ver_fp2_COTA = [101.285, 101.452, 101.611, 101.710, 101.310, 103.686]
 #exponencial_estimado(vueltas_ver_fp2_COTA)
 # exponencial_estimado_2(vueltas_ver_fp2_COTA)
 
-polinomio_grado2(vueltas_ver_fp2_COTA)
-polinomio_grado2_prueba_con_original(vueltas_ver_fp2_COTA)
-polinomio_grado2_prueba_sin_original(vueltas_ver_fp2_COTA)
+#polinomio_grado2(vueltas_ver_fp2_COTA)
+#polinomio_grado2_prueba_con_original(vueltas_ver_fp2_COTA)
+#polinomio_grado2_prueba_sin_original(vueltas_ver_fp2_COTA)
