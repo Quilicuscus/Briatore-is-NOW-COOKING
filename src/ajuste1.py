@@ -342,7 +342,9 @@ def polinomio_grado3_estimacion(tiempos_por_vuelta_aux, vueltas_futuras=5):
     # Imprimir los resultados
     print(f"P-valor general del ajuste polinómico de grado 3: {p_valor_general}")
     print("Tiempos totales (incluyendo estimaciones):")
-    print(tiempos_totales)
+
+
+    return p_valor_general, tiempos_totales
 
 def polinomio_grado3_estimacion_sin_original(tiempos_por_vuelta_aux, vueltas_futuras=5):
     # Función polinómica de grado 3
@@ -543,6 +545,8 @@ def exponencial_estimado(tiempos_por_vuelta_aux):
 
     print(tiempos_totales)
     print(p_valor)
+
+    return p_valor,tiempos_totales
 
 def exponencial_estimado_2(tiempos_por_vuelta_aux):
     vueltas = tiempos_por_vuelta_aux
@@ -891,6 +895,8 @@ def estimacion_logaritimica(tiempos_por_vuelta_aux: list):
 
 vueltas_perez_fp2_hungria = [82.964, 83.859, 82.709, 83.183, 83.643]
 vueltas_ver_fp2_COTA = [101.285, 101.452, 101.611, 101.710, 101.310, 103.686]
+
+#a, b = polinomio_grado3_estimacion(vueltas_ver_fp2_COTA)
 
 # polinomio_grado2()n
 # polinomio_grado2_prueba()
