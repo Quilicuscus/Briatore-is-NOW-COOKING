@@ -785,6 +785,8 @@ def nuevologaritmo(tiempos_por_vuelta_aux: list):
     plt.grid(True)
     plt.show()
 
+    return p_valor, tiempos_por_vuelta
+
 
 def estimacion_logaritimica(tiempos_por_vuelta_aux: list):
     """Esta funcion es muy parecida a nuevologaritmo,
